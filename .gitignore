@@ -1,5 +1,15 @@
+# Python
 venv/
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
+
+# Data (raw files can be large)
+data/*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
 .env
-.vscode/
