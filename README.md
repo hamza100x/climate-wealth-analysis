@@ -14,6 +14,8 @@ The project:
 - builds a merged country-level dataset from local CSV files,
 - runs linear regression models,
 - generates visualizations,
+- compares model fit with R², AIC, BIC, and RMSE,
+- summarizes GDP patterns by region,
 - highlights countries that overperform or underperform relative to climate-based predictions.
 
 ## What this project does
@@ -28,6 +30,7 @@ The project:
 - `log_gdp ~ mean_temp + abs_latitude`
 4. Produces charts and an interactive world map.
 5. Prints outlier countries using model residuals.
+6. Adds region-level summaries and residual diagnostics to show where the pooled model fits poorly.
 
 ## Project structure
 
@@ -42,8 +45,12 @@ climate-wealth-analysis/
     temp_vs_gdp.png             # generated
     lat_vs_gdp.png              # generated
     correlation_heatmap.png     # generated
+    region_wealth_boxplot.png   # generated
     residuals.png               # generated
+    residuals_by_region.png     # generated
     world_map.html              # generated
+    regional_summary.csv        # generated
+    model_comparison.csv        # generated
   src/
     data_loader.py
     analysis.py
@@ -87,6 +94,7 @@ python main.py
 
 The script will:
 - build and save `data/merged_dataset.csv`,
+- save regional summaries and model comparisons into `outputs/`,
 - generate charts in `outputs/`,
 - print regression summaries and outlier tables to the console.
 
@@ -94,10 +102,14 @@ The script will:
 
 After a successful run:
 - `data/merged_dataset.csv`
+- `outputs/regional_summary.csv`
+- `outputs/model_comparison.csv`
 - `outputs/temp_vs_gdp.png`
 - `outputs/lat_vs_gdp.png`
 - `outputs/correlation_heatmap.png`
+- `outputs/region_wealth_boxplot.png`
 - `outputs/residuals.png`
+- `outputs/residuals_by_region.png`
 - `outputs/world_map.html`
 
 ## Key findings
@@ -128,6 +140,12 @@ colonial history. These residuals are an argument for extending the model.
 The strongest next candidates are institutional quality (rule of law),
 colonial history, and natural resource endowments. These are the variables
 Acemoglu & Robinson argue dominate once geography is controlled for.
+
+**6. The regional gap is large.**
+In the current dataset, Europe has by far the highest median GDP per capita,
+while Africa sits at the bottom. The regional residual plots show that the
+pooled climate model still leaves a lot of structure unexplained, which is a
+hint that geography is only one piece of the story.
 ### Model comparison
 
 | Model | Formula | $R^2$ | Key coefficient takeaway |

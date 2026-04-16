@@ -82,6 +82,46 @@ def plot_both_scatters(df: pd.DataFrame):
                  'lat_vs_gdp.png')
 
 
+def plot_region_wealth_boxplot(df: pd.DataFrame):
+    """Show how GDP per capita varies across regions."""
+    fig, ax = plt.subplots(figsize=(11, 6))
+    order = df.groupby('region')['log_gdp'].median().sort_values(ascending=False).index
+
+    sns.boxplot(
+        data=df,
+        x='region',
+        hue='region',
+        y='log_gdp',
+        order=order,
+        palette='Set2',
+        dodge=False,
+        legend=False,
+        ax=ax,
+    )
+    sns.stripplot(
+        data=df,
+        x='region',
+        y='log_gdp',
+        order=order,
+        color='black',
+        alpha=0.3,
+        size=3,
+        ax=ax,
+    )
+
+    ax.set_xlabel('Region', fontsize=11)
+    ax.set_ylabel('Log GDP per capita (PPP)', fontsize=11)
+    ax.set_title('Wealth distribution by region', fontsize=13, pad=12)
+    ax.tick_params(axis='x', rotation=20)
+    ax.spines[['top', 'right']].set_visible(False)
+
+    plt.tight_layout()
+    path = 'outputs/region_wealth_boxplot.png'
+    plt.savefig(path, dpi=150)
+    plt.show()
+    print(f"Saved → {path}")
+
+
 def plot_correlation_heatmap(df: pd.DataFrame):
     """Correlation matrix of the three main variables."""
     cols = ['log_gdp', 'mean_temp', 'abs_latitude']
@@ -165,3 +205,35 @@ def plot_residuals(df: pd.DataFrame, model, title: str = 'Residuals'):
     plt.savefig('outputs/residuals.png', dpi=150)
     plt.show()
     print("Saved → outputs/residuals.png")
+
+
+def plot_residuals_by_region(df: pd.DataFrame, model):
+    """Show whether model errors cluster by region."""
+    df = df.copy()
+    df['residual'] = model.resid
+    order = df.groupby('region')['residual'].median().sort_values().index
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    sns.boxplot(
+        data=df,
+        x='region',
+        hue='region',
+        y='residual',
+        order=order,
+        palette='coolwarm',
+        dodge=False,
+        legend=False,
+        ax=ax,
+    )
+    ax.axhline(0, color=RED, linewidth=1, linestyle='--')
+    ax.set_xlabel('Region', fontsize=11)
+    ax.set_ylabel('Residual', fontsize=11)
+    ax.set_title('Temperature-model residuals by region', fontsize=13, pad=12)
+    ax.tick_params(axis='x', rotation=20)
+    ax.spines[['top', 'right']].set_visible(False)
+
+    plt.tight_layout()
+    path = 'outputs/residuals_by_region.png'
+    plt.savefig(path, dpi=150)
+    plt.show()
+    print(f"Saved → {path}")
